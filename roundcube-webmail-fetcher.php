@@ -105,17 +105,17 @@ foreach($listOfMails[0] as $mailListEntry) {
 	if(!is_resource($sendmail)) throw new Exception('Could not open sendmail process.');
 	fwrite($pipes[0], $data);
 	fclose($pipes[0]);
-    $info = stream_get_contents($pipes[1]);
-    fclose($pipes[1]);
-    $error = stream_get_contents($pipes[2]);
-    fclose($pipes[2]);
-    $returnValue = proc_close($sendmail);
-    if ($returnValue !== 0) throw new Exception('Sendmail failed with: ' . $info . ' / ' . $error);
+	$info = stream_get_contents($pipes[1]);
+	fclose($pipes[1]);
+	$error = stream_get_contents($pipes[2]);
+	fclose($pipes[2]);
+	$returnValue = proc_close($sendmail);
+	if ($returnValue !== 0) throw new Exception('Sendmail failed with: ' . $info . ' / ' . $error);
 
-    // Mark mail as read
-    curl_setopt($curl, CURLOPT_URL, $baseUrl . '?_task=mail&_action=mark');
-    curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-RoundCube-Request: ' . $requestToken));
+	// Mark mail as read
+	curl_setopt($curl, CURLOPT_URL, $baseUrl . '?_task=mail&_action=mark');
+	curl_setopt($curl, CURLOPT_POST, true);
+	curl_setopt($curl, CURLOPT_HTTPHEADER, array('X-RoundCube-Request: ' . $requestToken));
 	curl_setopt($curl, CURLOPT_POSTFIELDS, array('_flag' => 'read', '_remote' => '1', '_uid' => $uid));
 	$data = curl_exec($curl);
 	if (curl_getinfo($curl, CURLINFO_HTTP_CODE) !== 200) throw new Exception('Failed to mark mail as read.');
